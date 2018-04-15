@@ -30,7 +30,7 @@ CREATE TABLE Director(
 CREATE TABLE MovieGenre(
 	mid INT,
 	genre VARCHAR(20),
-	PRIMARY KEY (mid)
+	PRIMARY KEY (mid, genre)
 );
 
 CREATE TABLE MovieDirector(
