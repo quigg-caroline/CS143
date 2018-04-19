@@ -1,4 +1,4 @@
-SELECT Actor.first, Actor.last
+SELECT CONCAT(Actor.first, ' ' , Actor.last) as Actors
 FROM Actor
 INNER JOIN MovieActor ON Actor.id = MovieActor.aid
 INNER JOIN Movie ON MovieActor.mid = Movie.id
@@ -16,3 +16,4 @@ INNER JOIN MovieDirector ON Director.id = MovieDirector.did
 INNER JOIN MovieGenre ON MovieDirector.mid = MovieGenre.mid
 WHERE MovieGenre.genre = "Romance"
 GROUP BY MovieGenre.mid;
+-- This query returns the first and last names of all directors that directed movies in the romance genre
