@@ -14,7 +14,7 @@ Enter a SQL query into the box to query the database </br>
 	if($_SERVER["REQUEST_METHOD"] == "POST"){
  	$query = $_POST['query'];
  	#CHANGE THIS SHIT!!!
- 	$db = new mysqli('localhost', 'cs143', '', 'TEST');
+ 	$db = new mysqli('localhost', 'cs143', '', 'CS143');
 
  	if ($db->connect_errno > 0){
  		die('Unable to connect to database');
