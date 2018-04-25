@@ -55,6 +55,11 @@
     if ($db->connect_errno > 0){
       die('Unable to connect to database');
     }
+
+    //need to look up id from maxmovieid
+    $query = $db->prepare("INSERT INTO Movie (title, year, rating, company) VALUES (?, ?, ?)");
+    $query->bind_param("ssss", $title, $year, $rating, $company);
+    $query->execute();
   }
 ?>
 
