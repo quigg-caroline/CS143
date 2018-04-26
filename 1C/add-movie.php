@@ -40,26 +40,56 @@
 
 <?php
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['submit'])) {
 
-    $title = $_POST['title'];
-    $company = $_POST['company'];
-    $year = $_POST['year'];
-    $rating = $_POST['rating'];
-    if (!empty($_POST['genre'])) {
-      foreach($_POST['genre'] as $selected)
-        echo $selected. '</br>';
-    }
+      $title = $_POST['title'];
+      $company = $_POST['company'];
+      $year = $_POST['year'];
+      $rating = $_POST['rating'];
+      if (!empty($_POST['genre'])) {
+        foreach($_POST['genre'] as $selected)
+          echo $selected. '</br>';
+      }
 
-    $db = new mysqli('localhost', 'cs143', '', 'TEST');
+      //Connect to DB
+      $db = new mysqli('localhost', 'cs143', '', 'TEST');
 
-    if ($db->connect_errno > 0){
-      die('Unable to connect to database');
-    }
+      if ($db->connect_errno > 0){
+        die('Unable to connect to database');
+      }
 
-    //need to look up id from maxmovieid
-    $query = $db->prepare("INSERT INTO Movie (title, year, rating, company) VALUES (?, ?, ?)");
-    $query->bind_param("ssss", $title, $year, $rating, $company);
-    $query->execute();
+      //Get MaxMovieID
+      $query_movieid = 'SELECT * FROM MaxMovieID';
+      $result = $db->query($query_movieid);
+
+      if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $maxmovieid = $row['id'];
+        }
+      }
+      else {
+        echo 'Error: No max movie ID';
+      }
+
+      //Update MaxMovieID
+      $updated_id = $maxmovieid + 1;
+      $query_update = $db->prepare("UPDATE MaxMovieID SET id = ? WHERE id = ?");
+      $query_update->bind_param("ii", $updated_id, $maxmovieid);
+      if ($query_update->execute() === FALSE) {
+        echo "Error: " . $query_update . "<br>" . $db->error;
+      }
+
+      //Insert into Movie table
+      $query = $db->prepare("INSERT INTO Movie (id, title, year, rating, company) VALUES (?, ?, ?, ?, ?)");
+      $query->bind_param("isiss", $maxmovieid, $title, $year, $rating, $company);
+
+      if ($query->execute() === TRUE) {
+        echo "Inserted successfully!";
+      }
+      else {
+        echo "Error: " . $query . "<br>" . $db->error;
+      }
+     }
   }
 ?>
 
