@@ -46,10 +46,6 @@
       $company = $_POST['company'];
       $year = $_POST['year'];
       $rating = $_POST['rating'];
-      if (!empty($_POST['genre'])) {
-        foreach($_POST['genre'] as $selected)
-          echo $selected. '</br>';
-      }
 
       //Connect to DB
       $db = new mysqli('localhost', 'cs143', '', 'TEST');
@@ -80,14 +76,21 @@
       }
 
       //Insert into Movie table
-      $query = $db->prepare("INSERT INTO Movie (id, title, year, rating, company) VALUES (?, ?, ?, ?, ?)");
-      $query->bind_param("isiss", $maxmovieid, $title, $year, $rating, $company);
+      $query_movie = $db->prepare("INSERT INTO Movie (id, title, year, rating, company) VALUES (?, ?, ?, ?, ?)");
+      $query_movie->bind_param("isiss", $maxmovieid, $title, $year, $rating, $company);
 
-      if ($query->execute() === TRUE) {
-        echo "Inserted successfully!";
+      if ($query_movie->execute() === FALSE) {
+        echo "Error: " . $query_movie . "<br>" . $db->error;
       }
-      else {
-        echo "Error: " . $query . "<br>" . $db->error;
+
+      //Insert into MovieGenre table
+      if (!empty($_POST['genre'])) {
+        foreach($_POST['genre'] as $selected)
+        $query_genre = $db->prepare("INSERT INTO MovieGenre (mid, genre) VALUES (?, ?)");
+        $query_genre->bind_param("is", $maxmovieid, $selected);
+        if ($query_genre->execute() === FALSE) {
+          echo "Error: " . $query_genre . "<br>" . $db->error;
+        }
       }
      }
   }
