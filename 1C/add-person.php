@@ -41,6 +41,8 @@
       $dob = $_POST['dob'];
       $dod = $_POST['dod'];
 
+      //check date syntax
+
       //Connect to DB
       $db = new mysqli('localhost', 'cs143', '', 'TEST');
 
@@ -71,22 +73,27 @@
 
       //Insert in Actor table
       if ($job == "Actor") {
+        $date_birth = date("Y-m-d", strtotime($dob));
+        $date_death=null;
         $query_actor = $db->prepare("INSERT INTO Actor (id, last, first, sex, dob, dod) VALUES (?, ?, ?, ?, ?, ?)");
-        $query_actor->bind_param("isssss", $maxpersonid, $lastname, $firstname, $gender, $dob, $dod);
+        $query_actor->bind_param("isssss", $maxpersonid, $lastname, $firstname, $gender, $date_birth, $date_death);
 
         if ($query_actor->execute() === FALSE) {
           echo "Error: " . $query_actor . "<br>" . $db->error;
         }
       }
       else if ($job == "Director") {
-        $query_director = $db->prepare("INSERT INTO Director (id, last, first, dob, dod) VALUES (?, ?, ?, ?, ?)");
-        $query_director->bind_param("issss", $maxpersonid, $lastname, $firstname, $dob, $dod);
+        $date_birth = date("Y-m-d", strtotime($dob));
+        $date_death=null;
+        if(!empty($dod)){$date_death = date("Y-m-h", $dod);}
+        $stmt = $db->prepare("INSERT INTO Director (id, last, first, dob, dod) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("issss", $maxpersonid, $lastname, $firstname, $date_birth, $date_death);
 
-        if ($query_director->execute() === FALSE) {
+        if ($stmt->execute() == FALSE) {
           echo "Error: " . $query_director . "<br>" . $db->error;
         }
-      }
 
+      }
     }
   }
 
