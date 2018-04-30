@@ -32,6 +32,15 @@
     <input type = "checkbox" name = "genre[]" value = "Drama" /> Drama
     <input type = "checkbox" name = "genre[]" value = "Family" /> Family  
     <input type = "checkbox" name = "genre[]" value = "Fantasy" /> Fantasy
+    <input type = "checkbox" name = "genre[]" value = "Horror" /> Horror
+    <input type = "checkbox" name = "genre[]" value = "Musical" /> Musical
+    <input type = "checkbox" name = "genre[]" value = "Romance" /> Romance
+    <input type = "checkbox" name = "genre[]" value = "Musical" /> Sci-Fi
+    <input type = "checkbox" name = "genre[]" value = "Short" /> Short
+    <input type = "checkbox" name = "genre[]" value = "Thriller" /> Thriller
+    <input type = "checkbox" name = "genre[]" value = "War" /> War
+    <input type = "checkbox" name = "genre[]" value = "Western" /> Western
+
   </div>
 
   <button type = "submit" name = "submit" >Add</button>
