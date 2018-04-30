@@ -1,0 +1,65 @@
+<html>
+
+<body>
+
+<h2>Add an actor to a movie!!</h2>
+
+<form method = "post">
+
+  <div>
+    Actor <input type = "text" name = "name" placeholder = "Full Name" />
+  </div>
+
+  <div>
+    Movie <input type = "text" name = "movie" placeholder = "Movie Name" />
+  </div>
+
+  <button type = "submit" name = "submit" >Add Actor</button>
+
+</form>
+
+<?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['submit'])) {
+
+      //TODO: add formatting checks
+      $name = $_POST['name'];
+      $movie_name = $_POST['movie'];
+      $actor_names = explode(" ", $name)
+
+      //query movie table for movie id
+       //Connect to DB
+      $db = new mysqli('localhost', 'cs143', '', 'TEST');
+
+      if ($db->connect_errno > 0){
+        die('Unable to connect to database');
+      }
+
+      $query_movieid = "SELECT id FROM Movie WHERE title = \"".$movie_name."\"";
+      $result = $db->query($query_movieid);
+      $movie = null;
+      if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $movie = $row['id'];
+      }
+      else {
+        echo "Error: Could not find movie";
+      }
+
+      if(!(empty($movie)))
+      {
+        //query for actor id
+        $query_actorid = "SELECT id FROM Actor WHERE first = \"".actor_names[0]."AND last=\"".actor_names[1]."\"";
+        echo $query_actorid;
+      }
+
+
+
+    }
+  }
+
+?>
+
+</body>
+
+</html>
