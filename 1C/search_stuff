@@ -1,0 +1,11 @@
+<html>
+<body>
+	<h1>Search Movie & Actor Info</h1>
+	<form method = "post" action="search.php" >
+		<div>
+			<input type="text" name="search">
+		</div>
+		<button type = "submit" name = "submit" >Search</button>
+	</form>
+</body>
+</html>

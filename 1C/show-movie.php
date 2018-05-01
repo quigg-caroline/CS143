@@ -1,5 +1,6 @@
 <html>
 <body>
+	<?php include('search.php') ?>
 	<h2>Movie Information Page</h2>
 	<?php
 		$get_string =  $_SERVER['QUERY_STRING'];
@@ -17,9 +18,9 @@
 	     	CONCAT(Director.first,\" \", Director.last) as director,
 	     	Movie.year,
 	     	MovieGenre.genre FROM Movie
-	     	INNER JOIN MovieDirector ON MovieDirector.mid = Movie.id
-	     	INNER JOIN Director ON MovieDirector.did = Director.id
-	     	INNER JOIN MovieGenre ON Movie.id=MovieGenre.mid
+	     	LEFT JOIN MovieDirector ON MovieDirector.mid = Movie.id
+	     	LEFT JOIN Director ON MovieDirector.did = Director.id
+	     	LEFT JOIN MovieGenre ON Movie.id=MovieGenre.mid
 	     	WHERE Movie.id=".$get_array['id'];
 	    $result = $db->query($query_movie);
 	    if ($result === FALSE)
