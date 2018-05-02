@@ -13,7 +13,7 @@
     Movie
     <select name="movie">
       <?php
-         $db = new mysqli('localhost', 'cs143', '', 'TEST');
+         $db = new mysqli('localhost', 'cs143', '', 'CS143');
 
         if ($db->connect_errno > 0){
           die('Unable to connect to database');
@@ -34,7 +34,7 @@
     Director
     <select name="director">
       <?php
-         $db = new mysqli('localhost', 'cs143', '', 'TEST');
+         $db = new mysqli('localhost', 'cs143', '', 'CS143');
 
         if ($db->connect_errno > 0){
           die('Unable to connect to database');
@@ -68,7 +68,7 @@
 
       //query movie table for movie id
        //Connect to DB
-      $db = new mysqli('localhost', 'cs143', '', 'TEST');
+      $db = new mysqli('localhost', 'cs143', '', 'CS143');
 
       if ($db->connect_errno > 0){
         die('Unable to connect to database');

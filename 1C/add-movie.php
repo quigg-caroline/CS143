@@ -83,14 +83,9 @@
       {
         exit("Year format");
       }
-      $year = strtotime($year);
-      if($year === FALSE)
-      {
-        exit("Year format");
-      }
-      $year=date("Y", $year);
+      
       //Connect to DB
-      $db = new mysqli('localhost', 'cs143', '', 'TEST');
+      $db = new mysqli('localhost', 'cs143', '', 'CS143');
 
       if ($db->connect_errno > 0){
         die('Unable to connect to database');

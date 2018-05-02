@@ -2,8 +2,8 @@
 <body>
 
 <link rel="stylesheet" href="styling.css">
-<?php include('navigation.php') ?>
 
+	<?php include('search.php') ?>
 <div class = "header" >Actor Information Page</div>
 	<?php
 		$get_string =  $_SERVER['QUERY_STRING'];
@@ -13,7 +13,7 @@
 		echo "<div>";
 		echo "<h3> Actor Information is: </h3>";
 		$query_string = "SELECT first, last, sex, dob, dob FROM Actor WHERE id=".$get_array['id'];
-		 $db = new mysqli('localhost', 'cs143', '', 'TEST');
+		 $db = new mysqli('localhost', 'cs143', '', 'CS143');
 
 	      if ($db->connect_errno > 0){
 	        die('Unable to connect to database');
