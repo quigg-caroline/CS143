@@ -51,7 +51,7 @@
     </div>
     <div class = "row" >
     <input type = "checkbox" name = "genre[]" value = "Romance" /> Romance
-    <input type = "checkbox" name = "genre[]" value = "Musical" /> Sci-Fi
+    <input type = "checkbox" name = "genre[]" value = "Sci-Fi" /> Sci-Fi
     <input type = "checkbox" name = "genre[]" value = "Short" /> Short
     <input type = "checkbox" name = "genre[]" value = "Thriller" /> Thriller
     <input type = "checkbox" name = "genre[]" value = "War" /> War
@@ -70,10 +70,25 @@
 
       //TODO: add formatting checks
       $title = $_POST['title'];
+      if(empty($title))exit("Enter movie title.");
       $company = $_POST['company'];
+      if(empty($company))exit("Enter production company.");
       $year = $_POST['year'];
+      if(empty($year))exit("Enter year.");
       $rating = $_POST['rating'];
+      if(empty($rating))exit("Enter MPAA rating.");
+      if (empty($_POST['genre']))exit("Enter a genre.");
 
+      if(strlen($year)<4)
+      {
+        exit("Year format");
+      }
+      $year = strtotime($year);
+      if($year === FALSE)
+      {
+        exit("Year format");
+      }
+      $year=date("Y", $year);
       //Connect to DB
       $db = new mysqli('localhost', 'cs143', '', 'TEST');
 
@@ -109,10 +124,9 @@
       if ($query_movie->execute() === FALSE) {
         echo "Error: " . $query_movie . "<br>" . $db->error;
       }
-
       //Insert into MovieGenre table
       if (!empty($_POST['genre'])) {
-        foreach($_POST['genre'] as $selected)
+        foreach($_POST['genre'] as $selected){
         $query_genre = $db->prepare("INSERT INTO MovieGenre (mid, genre) VALUES (?, ?)");
         $query_genre->bind_param("is", $maxmovieid, $selected);
         if ($query_genre->execute() === FALSE) {
@@ -120,6 +134,7 @@
         }
       }
      }
+   }
   }
 ?>
 
