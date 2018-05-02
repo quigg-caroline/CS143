@@ -21,8 +21,8 @@
   </div>
 
   <div>
-    Date of Birth <input type = "text" name = "dob" placeholder = "Date of Birth" />
-    Date of Death <input type = "text" name = "dod" placeholder = "Date of Death" />
+    Date of Birth <input type = "text" name = "dob" placeholder = "Ex: 2001-10-22" />
+    Date of Death <input type = "text" name = "dod" placeholder = "Ex: 2001-10-22" />
   </div>
 
   <button type = "submit" name = "submit" >Add</button>
@@ -35,12 +35,33 @@
 
       //TODO: add formatting checks
       $job = $_POST['job'];
+      if(empty($job))exit("Select Actor or Director.");
       $firstname = $_POST['firstname'];
       $lastname = $_POST['lastname'];
+      if(empty($firstname) or empty($lastname))exit("Need full name.");
       $gender = $_POST['gender'];
+      if(empty($gender))exit("Enter gender.");
       $dob = $_POST['dob'];
+      if(empty($dob))exit("Need birthdate.");
       $dod = $_POST['dod'];
-
+      $date_birth = strtotime($dob);
+      if($date_birth === FALSE)
+      {
+        exit("Date format.");
+      }
+      $date_birth=date("Y-m-d", $date_birth);
+      $date_death=strtotime($dod);
+        if($date_death === FALSE and !empty($dod))
+        {
+          exit("Date format.");
+        }
+      if(!empty($dod)){
+        $date_death=date("Y-m-d", $date_death);
+      }
+      else
+      {
+        $date_death=null;
+      }
       //check date syntax
 
       //Connect to DB
@@ -73,24 +94,18 @@
 
       //Insert in Actor table
       if ($job == "Actor") {
-        $date_birth = date("Y-m-d", strtotime($dob));
-        $date_death=null;
         $query_actor = $db->prepare("INSERT INTO Actor (id, last, first, sex, dob, dod) VALUES (?, ?, ?, ?, ?, ?)");
         $query_actor->bind_param("isssss", $maxpersonid, $lastname, $firstname, $gender, $date_birth, $date_death);
-
         if ($query_actor->execute() === FALSE) {
           echo "Error: " . $query_actor . "<br>" . $db->error;
         }
       }
       else if ($job == "Director") {
-        $date_birth = date("Y-m-d", strtotime($dob));
-        $date_death=null;
-        if(!empty($dod)){$date_death = date("Y-m-h", $dod);}
         $stmt = $db->prepare("INSERT INTO Director (id, last, first, dob, dod) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("issss", $maxpersonid, $lastname, $firstname, $date_birth, $date_death);
 
         if ($stmt->execute() == FALSE) {
-          echo "Error: " . $query_director . "<br>" . $db->error;
+          echo "Error: " . $stmt . "<br>" . $db->error;
         }
 
       }
