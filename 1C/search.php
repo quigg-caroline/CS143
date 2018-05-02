@@ -2,7 +2,7 @@
 <body>
 
 <link rel="stylesheet" href="styling.css">
-<?php include('homepage.php') ?>
+<?php include('navigation.php') ?>
 		<div class = "header" >Search Movie & Actor Info</div>
 	<form class = "nope" method = "post" action="search.php" >
 		<div>

@@ -2,7 +2,7 @@
 <body>
 
 <link rel="stylesheet" href="styling.css">
-<?php include('homepage.php') ?>
+<?php include('navigation.php') ?>
 
 	<?php include('search.php') ?>
 

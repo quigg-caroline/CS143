@@ -3,7 +3,7 @@
 <body>
 
 <link rel="stylesheet" href="styling.css">
-<?php include('homepage.php') ?>
+<?php include('navigation.php') ?>
 
 <div class= "header" >Add an actor to a movie!</div>
 
