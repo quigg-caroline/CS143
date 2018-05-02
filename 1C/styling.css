@@ -64,3 +64,20 @@
   text-align: center;
   padding: 5px;
 }
+
+form:not(.nope) {
+  background-color: rgb(250, 246, 246);
+  box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
+  padding: 12px;
+  text-align: center;
+  margin: 0px 300px;
+}
+
+.nope {
+  padding: 12px;
+  text-align: center;
+}
+
+.row {
+  padding: 5px 0px;
+}

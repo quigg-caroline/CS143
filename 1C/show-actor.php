@@ -1,6 +1,10 @@
 <html>
 <body>
-	<h2>Actor Information Page</h2>
+
+<link rel="stylesheet" href="styling.css">
+<?php include('homepage.php') ?>
+
+<div class = "header" >Actor Information Page</div>
 	<?php
 		$get_string =  $_SERVER['QUERY_STRING'];
 		parse_str($get_string, $get_array);

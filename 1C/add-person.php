@@ -2,25 +2,31 @@
 
 <body>
 
-<h2>Add a new actor or director!</h2>
+<link rel="stylesheet" href="styling.css">
+<?php include('homepage.php') ?>
+
+<div class = "header" >Add a new actor or director!</div>
 
 <form method = "post">
-  <div>
-    <input type = "radio" name = "job" value = "Actor" /> Actor  
-    <input type = "radio" name = "job" value = "Director" /> Director
-  </div>
 
-  <div>
+ <div class = "row" >
     First Name <input type = "text" name = "firstname" placeholder = "First Name" />
     Last Name <input type = "text" name = "lastname" placeholder = "Last Name" />
   </div>
 
-  <div>
+  <div class = "row" >
+    Role:
+    <input type = "radio" name = "job" value = "Actor" /> Actor  
+    <input type = "radio" name = "job" value = "Director" /> Director
+  </div>
+
+  <div class = "row" >
+    Gender:
     <input type = "radio" name = "gender" value = "Male" /> Male  
     <input type = "radio" name = "gender" value = "Female" /> Female
   </div>
 
-  <div>
+  <div class = "row" >
     Date of Birth <input type = "text" name = "dob" placeholder = "Ex: 2001-10-22" />
     Date of Death <input type = "text" name = "dod" placeholder = "Ex: 2001-10-22" />
   </div>

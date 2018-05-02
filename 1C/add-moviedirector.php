@@ -2,15 +2,18 @@
 
 <body>
 
-<h2>Add an director to a movie!!</h2>
+<link rel="stylesheet" href="styling.css">
+<?php include('homepage.php') ?>
+
+<div class = "header" >Add a director to a movie</div>
 
 <form method = "post">
 
-  <div>
+  <div class = "row" >
     Movie <input type = "text" name = "movie" placeholder = "Movie Name" />
   </div>
 
-  <div>
+  <div class = "row" >
     Director <input type = "text" name = "name" placeholder = "Full Name" />
   </div>
 

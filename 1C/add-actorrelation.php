@@ -2,20 +2,23 @@
 
 <body>
 
-<h2>Add an actor to a movie!!</h2>
+<link rel="stylesheet" href="styling.css">
+<?php include('homepage.php') ?>
+
+<div class= "header" >Add an actor to a movie!</div>
 
 <form method = "post">
 
-  <div>
-    Actor <input type = "text" name = "name" placeholder = "Full Name" />
+  <div class = "row" >
+    Actor: <input type = "text" name = "name" placeholder = "Full Name" />
   </div>
 
-  <div>
-    Movie <input type = "text" name = "movie" placeholder = "Movie Name" />
+  <div class = "row" >
+    Movie: <input type = "text" name = "movie" placeholder = "Movie Name" />
   </div>
 
-  <div>
-    Role <input type = "text" name = "role"/>
+  <div class = "row" >
+    Role: <input type = "text" name = "role"/>
   </div>
 
   <button type = "submit" name = "submit" >Add Actor</button>
