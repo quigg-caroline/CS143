@@ -2,7 +2,10 @@
 
 <body>
 
-<h2>Add an actor to a movie!!</h2>
+<link rel="stylesheet" href="styling.css">
+<?php include('navigation.php') ?>
+
+<div class= "header" >Add an actor to a movie!</div>
 
 <form method = "post">
   <div>
@@ -47,8 +50,8 @@
       </select>
   </div>
 
-  <div>
-    Role <input type = "text" name = "role"/>
+  <div class = "row" >
+    Role: <input type = "text" name = "role"/>
   </div>
 
   <button type = "submit" name = "submit" >Add Actor</button>

@@ -1,7 +1,13 @@
 <html>
 <body>
+
+<link rel="stylesheet" href="styling.css">
+<?php include('navigation.php') ?>
+
 	<?php include('search.php') ?>
-	<h2>Movie Information Page</h2>
+
+	<div class = "header" >Movie Information Page</div>
+
 	<?php
 		$get_string =  $_SERVER['QUERY_STRING'];
 		parse_str($get_string, $get_array);

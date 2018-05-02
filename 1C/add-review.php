@@ -2,20 +2,23 @@
 
 <body>
 
-<h2>Add a new review!!</h2>
+<link rel="stylesheet" href="styling.css">
+<?php include('navigation.php') ?>
+
+<div class = "header" >Add a new review!</div>
 
 <form method = "post">
 
-  <div>
-    Your Name <input type = "text" name = "name" placeholder = "Enter Your Name" />
+  <div class = "row" >
+    Your Name: <input type = "text" name = "name" placeholder = "Enter Your Name" />
   </div>
 
-  <div>
-    Movie <input type = "text" name = "movie" placeholder = "Movie Name" />
+  <div class = "row" >
+    Movie: <input type = "text" name = "movie" placeholder = "Movie Name" />
   </div>
 
-  <div>
-    Movie Rating
+  <div class = "row" >
+    Movie Rating:
     <select name="rating">
       <option value="1">1</option>
       <option value="2">2</option>
@@ -25,8 +28,8 @@
     </select>
   </div>
 
-  <div>
-    Comment <input type = "text" name = "comment"  />
+  <div class = "row" >
+    Comment: <input type = "text" name = "comment"  />
   </div>
 
   <button type = "submit" name = "submit" >Add Review</button>

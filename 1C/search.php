@@ -1,7 +1,10 @@
 <html>
 <body>
-		<h1>Search Movie & Actor Info</h1>
-	<form method = "post" action="search.php" >
+
+<link rel="stylesheet" href="styling.css">
+<?php include('navigation.php') ?>
+		<div class = "header" >Search Movie & Actor Info</div>
+	<form class = "nope" method = "post" action="search.php" >
 		<div>
 			<input type="text" name="search">
 		</div>
