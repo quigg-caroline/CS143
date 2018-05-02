@@ -57,6 +57,17 @@
   display: block;
 }
 
+/* home */
+
+.home {
+  margin: 10px 300px;
+}
+
+.us {
+  max-height: 100%;
+  width: 500px;
+}
+
 /* all pages */
 .header {
   font-size: 30px; 
@@ -65,11 +76,14 @@
   padding: 5px;
 }
 
+form:not(.nope), .home {
+  padding: 12px;
+  text-align: center;
+}
+
 form:not(.nope) {
   background-color: rgb(250, 246, 246);
   box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.2);
-  padding: 12px;
-  text-align: center;
   margin: 0px 300px;
 }
 
