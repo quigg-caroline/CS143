@@ -1,6 +1,12 @@
 <html>
 <body>
-
+		<h1>Search Movie & Actor Info</h1>
+	<form method = "post" action="search.php" >
+		<div>
+			<input type="text" name="search">
+		</div>
+		<button type = "submit" name = "submit" >Search</button>
+	</form>
 	<?php
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['submit'])) {
