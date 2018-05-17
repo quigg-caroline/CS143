@@ -121,6 +121,7 @@ def sanitize(text):
 
     #TODO maybe get this fucking url shit outta here lolz
     #text = re.sub(r'https?:\/\/.*[ ]', 'hi', text)
+    text = re.sub(r'https?:\/\/\S+', ' ', text)
     text = text.split()
     print(text)
     #return [parsed_text, unigrams, bigrams, trigrams]
