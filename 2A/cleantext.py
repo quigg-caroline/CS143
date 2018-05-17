@@ -118,9 +118,6 @@ def sanitize(text):
     #print(text)
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
-
-    #TODO maybe get this fucking url shit outta here lolz
-    #text = re.sub(r'https?:\/\/.*[ ]', 'hi', text)
     text = re.sub(r'https?:\/\/\S+', ' ', text)
     text = text.split()
     print(text)
