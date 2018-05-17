@@ -115,8 +115,15 @@ def sanitize(text):
     """
 
     # YOUR CODE GOES BELOW:
+    #print(text)
+    text = text.replace('\n', ' ')
+    text = text.replace('\t', ' ')
 
-    return [parsed_text, unigrams, bigrams, trigrams]
+    #TODO maybe get this fucking url shit outta here lolz
+    #text = re.sub(r'https?:\/\/.*[ ]', 'hi', text)
+    text = text.split()
+    print(text)
+    #return [parsed_text, unigrams, bigrams, trigrams]
 
 
 if __name__ == "__main__":
@@ -128,3 +135,5 @@ if __name__ == "__main__":
     # pass to "sanitize" and print the result as a list.
 
     # YOUR CODE GOES BELOW.
+    temp = 'https://ccle.ucla.edu/mod/page/view.php?id=2003126\nI\'m afraid I can\'t explain myself, sir.\nBecause I am not myself,\tyou see?'
+    sanitize(temp)
