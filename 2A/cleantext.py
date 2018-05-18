@@ -116,10 +116,16 @@ def sanitize(text):
 
     # YOUR CODE GOES BELOW:
     #print(text)
+    #Step 1: Replace new lines and tab characters with a single space
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
-    text = re.sub(r'https?:\/\/\S+', ' ', text)
-    text = text.split()
+
+    #Step 2: Remove URLs
+    text = re.sub(r'https?:\/\/\S+', "", text)
+
+    #Steps 3 & 4: Split text on single space & separate external punctuations
+    text = re.findall(r"[\w']+|[.,!?;]", text) #Hardcode external punctuations to be separated
+
     print(text)
     #return [parsed_text, unigrams, bigrams, trigrams]
 
@@ -133,5 +139,5 @@ if __name__ == "__main__":
     # pass to "sanitize" and print the result as a list.
 
     # YOUR CODE GOES BELOW.
-    temp = 'https://ccle.ucla.edu/mod/page/view.php?id=2003126\nI\'m afraid I can\'t explain myself, sir.\nBecause I am not myself,\tyou see?'
+    temp = 'https://ccle.ucla.edu/mod/page/view.php?id=2003126 I\'m afraid I can\'t explain myself, sir.\nBecause I am not myself,\tyou see?'
     sanitize(temp)
