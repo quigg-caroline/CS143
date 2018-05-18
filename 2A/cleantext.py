@@ -124,7 +124,7 @@ def sanitize(text):
     text = re.sub(r'https?:\/\/\S+', "", text)
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
-    text = re.findall(r"[\w']+|[.,!?;]", text) #Hardcode external punctuations to be separated
+    text = re.findall(r"[\w']+|[.,!?;:]", text) #Hardcode external punctuations to be separated
 
     print(text)
     #return [parsed_text, unigrams, bigrams, trigrams]
