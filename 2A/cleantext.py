@@ -130,7 +130,19 @@ def sanitize(text):
     text = re.sub(r'https?:\/\/\S+', "", text)
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
+    #This needs to be fixed bc fucks up when special characters are in the middle of words
     text = re.findall(r"[\w']+|[.,!?;:]", text) #Hardcode external punctuations to be separated
+
+    #Step 5: Remove punctuation/special characters except external punctuation
+    #lol need to fix this step/above steps for special characters bc shit is hardcoded
+    punctuation_ok = ['?', ';', ':', ',', '.', '!']
+    punctuation = ["'"]
+    for n, i in enumerate(text):
+        temp = ""
+        for char in i:
+            char = re.sub(r"[^\w.,!?;:]", '', char)
+            temp = temp + char
+        text[n] = temp
 
     print(text)
     #return [parsed_text, unigrams, bigrams, trigrams]
