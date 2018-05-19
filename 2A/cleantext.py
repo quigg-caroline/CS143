@@ -121,6 +121,12 @@ def sanitize(text):
     text = text.replace('\t', ' ')
 
     #Step 2: Remove URLs
+    #need to replace [text](URL) with text...idk how to do that with regex
+    #might need to iterate through text ughh
+    matches = re.findall(r'\[.*\]\(https?:\/\/\S+\)', text)
+    for match in matches:
+        sub_text= re.findall(r'\[(.*?)\]',match)[0]
+        text= re.sub(r'match',sub_text,text)    
     text = re.sub(r'https?:\/\/\S+', "", text)
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
