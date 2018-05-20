@@ -131,7 +131,7 @@ def sanitize(text):
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
     #This needs to be fixed bc fucks up when special characters are in the middle of words
-    text = re.findall(r"[\w']+|[.,!?;:]", text) #Hardcode external punctuations to be separated
+    text = re.findall(r"[^.,!?;:\s]+|[.,!?;:]", text) #Hardcode external punctuations to be separated
 
     #Step 5: Remove punctuation/special characters except external punctuation
     #lol need to fix this step/above steps for special characters bc shit is hardcoded
@@ -140,11 +140,21 @@ def sanitize(text):
     for n, i in enumerate(text):
         temp = ""
         for char in i:
-            char = re.sub(r"[^\w.,!?;:]", '', char)
+            char = re.sub(r"[^\w.,!?;:\']", '', char)
             temp = temp + char
         text[n] = temp
+    text = list(filter(None, text)) #filter empty strings
 
-    print(text)
+    #Step 6: convert to lower case
+    text = map(lambda x:x.lower(), text)
+
+    # create parsed_text string
+    parsed_text = ""
+    for word in text:
+        parsed_text += word 
+        parsed_text += " "
+    parsed_text = parsed_text[:-1]
+    print(parsed_text)
     #return [parsed_text, unigrams, bigrams, trigrams]
 
 
@@ -157,5 +167,5 @@ if __name__ == "__main__":
     # pass to "sanitize" and print the result as a list.
 
     # YOUR CODE GOES BELOW.
-    temp = 'https://ccle.ucla.edu/mod/page/view.php?id=2003126 I\'m afraid I can\'t explain myself, sir.\nBecause I am not myself,\tyou see?'
+    temp = 'That said, is the WSJ (\"our guiding philosophy in five words is \'there shall be open borders\'\") really *that* socially conservative?'
     sanitize(temp)
