@@ -146,15 +146,25 @@ def sanitize(text):
     text = list(filter(None, text)) #filter empty strings
 
     #Step 6: convert to lower case
-    text = map(lambda x:x.lower(), text)
+    text = list(map(lambda x:x.lower(), text))
 
     # create parsed_text string
     parsed_text = ""
     for word in text:
-        parsed_text += word 
+        if word in _CONTRACTIONS:
+            parsed_text += _CONTRACTIONS[word]
+        else: parsed_text += word 
         parsed_text += " "
     parsed_text = parsed_text[:-1]
     print(parsed_text)
+
+    unigrams = ""
+    for word in text:
+        if word not in punctuation_ok:
+            unigrams += word
+            unigrams += " "
+    unigrams = unigrams[:-1]
+    print (unigrams)
     #return [parsed_text, unigrams, bigrams, trigrams]
 
 
