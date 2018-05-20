@@ -105,6 +105,33 @@ _CONTRACTIONS = {
 
 # You may need to write regular expressions.
 
+# Generates all possible n-grams for a set of phrases
+# e.g. makeNGrams([['foo', 'bar', 'baz'], ['xyz', 'uvw']], 2) => 'foo_bar bar_baz xyz_uvw'
+def makeNGrams(phrases, n):
+    nGramList = []
+    
+    for phrase in phrases:
+        index = 0
+        while (index < len(phrase) - (n - 1)):
+            currNGram = "_".join(phrase[index:index+n])
+            nGramList.append(currNGram)
+            index += 1
+    return " ".join(nGramList)
+
+# Splits a list across any/all of the given splitters
+# e.g. splitList([1, 2, 3, 4], [2]) => [[1], [3, 4]]
+def splitList(l, splitters):
+    finalList = [[]]
+    currListIndex = 0
+    for item in l:
+        if item in splitters:
+            finalList.append([])
+            currListIndex += 1
+            continue
+        else:
+            finalList[currListIndex].append(item)
+    return finalList
+
 def sanitize(text):
     """Do parse the text in variable "text" according to the spec, and return
     a LIST containing FOUR strings 
@@ -136,7 +163,6 @@ def sanitize(text):
     #Step 5: Remove punctuation/special characters except external punctuation
     #lol need to fix this step/above steps for special characters bc shit is hardcoded
     punctuation_ok = ['?', ';', ':', ',', '.', '!']
-    punctuation = ["'"]
     for n, i in enumerate(text):
         temp = ""
         for char in i:
@@ -156,19 +182,18 @@ def sanitize(text):
         else: parsed_text += word 
         parsed_text += " "
     parsed_text = parsed_text[:-1]
-    print(parsed_text)
 
-    #Step 8: Create unigrams
-    #basically remove single punctuation tokens from the string
-    unigrams = ""
-    for word in text:
-        if word not in punctuation_ok:
-            unigrams += word
-            unigrams += " "
-    unigrams = unigrams[:-1]
-    print (unigrams)
-    #return [parsed_text, unigrams, bigrams, trigrams]
+    # Step 8.0: Create list of phrases, where each phrase is a list of strings
+    # Separating them into phrases ensures that the n-grams are made only within punctuation boundaries
+    phrases = splitList(text, punctuation_ok)
 
+    #Step 8.1 - 8.3: Create unigrams, bigrams, trigrams
+    unigrams = makeNGrams(phrases, 1)
+    bigrams = makeNGrams(phrases, 2)
+    trigrams = makeNGrams(phrases, 3)
+
+    # Step 9: Return results in a list
+    return [parsed_text, unigrams, bigrams, trigrams]
 
 if __name__ == "__main__":
     # This is the Python main function.
@@ -179,5 +204,17 @@ if __name__ == "__main__":
     # pass to "sanitize" and print the result as a list.
 
     # YOUR CODE GOES BELOW.
-    temp = 'That said, is the WSJ (\"our guiding philosophy in five words is \'there shall be open borders\'\") really *that* socially conservative?'
-    sanitize(temp)
+    # temp = 'That said, is the WSJ (\"our guiding philosophy in five words is \'there shall be open borders\'\") really *that* socially conservative?'
+    temp = 'I\'m afraid I can\'t explain myself, sir. Because I am not myself, you see?'
+    result = sanitize(temp)
+    print("------")
+    print("Final result:")
+    print("------")
+    print("Parsed:")
+    print(result[0])
+    print("Unigrams:")
+    print(result[1])
+    print("Bigrams:")
+    print(result[2])
+    print("Trigrams:")
+    print(result[3])
