@@ -158,6 +158,8 @@ def sanitize(text):
     parsed_text = parsed_text[:-1]
     print(parsed_text)
 
+    #Step 8: Create unigrams
+    #basically remove single punctuation tokens from the string
     unigrams = ""
     for word in text:
         if word not in punctuation_ok:
