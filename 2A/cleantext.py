@@ -202,21 +202,9 @@ if __name__ == "__main__":
     # read it line by line, extract the proper value from the JSON,
     # pass to "sanitize" and print the result as a list.
     with open(sys.argv[1]) as f:
-        jsonData = json.load(f)
-    
-
-    # YOUR CODE GOES BELOW.
-    # temp = 'That said, is the WSJ (\"our guiding philosophy in five words is \'there shall be open borders\'\") really *that* socially conservative?'
-    temp = 'I\'m afraid I can\'t explain myself, sir. Because I am not myself, you see?'
-    result = sanitize(temp)
-    print("------")
-    print("Final result:")
-    print("------")
-    print("Parsed:")
-    print(result[0])
-    print("Unigrams:")
-    print(result[1])
-    print("Bigrams:")
-    print(result[2])
-    print("Trigrams:")
-    print(result[3])
+        result = []
+        for jsonElement in f:
+            jsonData = json.loads(jsonElement)
+            answer = sanitize(jsonData["body"])
+            result.append(answer)
+        print(result)
