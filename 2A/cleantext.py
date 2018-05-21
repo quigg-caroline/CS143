@@ -7,7 +7,8 @@ from __future__ import print_function
 import re
 import string
 import argparse
-
+import json
+import sys
 
 __author__ = ""
 __email__ = ""
@@ -102,8 +103,6 @@ _CONTRACTIONS = {
     "youre": "you're",
     "youve": "you've"
 }
-
-# You may need to write regular expressions.
 
 # Generates all possible n-grams for a set of phrases
 # e.g. makeNGrams([['foo', 'bar', 'baz'], ['xyz', 'uvw']], 2) => 'foo_bar bar_baz xyz_uvw'
@@ -202,6 +201,9 @@ if __name__ == "__main__":
     # and this "main" function will open the file,
     # read it line by line, extract the proper value from the JSON,
     # pass to "sanitize" and print the result as a list.
+    with open(sys.argv[1]) as f:
+        jsonData = json.load(f)
+    
 
     # YOUR CODE GOES BELOW.
     # temp = 'That said, is the WSJ (\"our guiding philosophy in five words is \'there shall be open borders\'\") really *that* socially conservative?'

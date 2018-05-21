@@ -1,0 +1,6 @@
+{
+  "hello": {
+    "world": 1,
+    "foo": [1,2, { "baz": "myString", "bar": null }]
+  }
+}
