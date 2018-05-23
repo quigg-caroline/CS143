@@ -141,14 +141,11 @@ def sanitize(text):
     """
 
     # YOUR CODE GOES BELOW:
-    #print(text)
     #Step 1: Replace new lines and tab characters with a single space
     text = text.replace('\n', ' ')
     text = text.replace('\t', ' ')
 
     #Step 2: Remove URLs
-    #need to replace [text](URL) with text...idk how to do that with regex
-    #might need to iterate through text ughh
     matches = re.findall(r'\[.*\]\(https?:\/\/\S+\)', text)
     for match in matches:
         sub_text= re.findall(r'\[(.*?)\]',match)[0]
@@ -156,11 +153,9 @@ def sanitize(text):
     text = re.sub(r'https?:\/\/\S+', "", text)
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
-    #This needs to be fixed bc fucks up when special characters are in the middle of words
     text = re.findall(r"[^.,!?;:\s]+|[.,!?;:]", text) #Hardcode external punctuations to be separated
 
     #Step 5: Remove punctuation/special characters except external punctuation
-    #lol need to fix this step/above steps for special characters bc shit is hardcoded
     punctuation_ok = ['?', ';', ':', ',', '.', '!']
     for n, i in enumerate(text):
         temp = ""
