@@ -7,10 +7,13 @@ from pyspark.sql import SQLContext
 # IMPORT OTHER MODULES HERE
 import os
 
-#TASK 1: Load data into PySpark
-#Written as a parquet file so should only take 10+ minutes to run the first time
-def load(context):
+def main(context):
+  """Main function takes a Spark SQL context."""
+  # YOUR CODE HERE
+  # YOU MAY ADD OTHER FUNCTIONS AS NEEDED
   
+  #TASK 1: Load data into PySpark
+  #Written as a parquet file so should only take 10+ minutes to run the first time
   if os.path.isdir('comments.parquet') == False:
     comments = context.read.json("comments-minimal.json.bz2")
     comments.write.parquet("comments.parquet")
@@ -21,18 +24,14 @@ def load(context):
     submissions.write.parquet("submissions.parquet")
   submissionspar = context.read.parquet("submissions.parquet")
 
-  if os.path.isdir('labeled_data.parquet') == False:
-    labeled_data = context.read.csv("labeled_data.csv")
-    labeled_data.write.parquet("labeled_data.parquet")
-  datapar = context.read.parquet("labeled_data.parquet")
+  #labeled_data = context.read.csv("labeled_data.csv")
+  labeled_data = context.read.load("labeled_data.csv", format="csv", sep=",", inferSchema="true", header="true")
 
-def main(context):
-  """Main function takes a Spark SQL context."""
-  # YOUR CODE HERE
-  # YOU MAY ADD OTHER FUNCTIONS AS NEEDED
-  
-  #Task 1
-  load(context)
+  #TASK 2
+  #labeled_data.join(commentpar.select("id"), "Input_id").show()
+  #context.sql("SELECT * FROM labeled_data l JOIN commentpar c ON l.Input_id = c.id").show()
+  comments = commentpar.select('id', 'body')
+  join = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
