@@ -34,30 +34,16 @@ def main(context):
     submissions.write.parquet("submissions.parquet")
   submissionspar = context.read.parquet("submissions.parquet")
 
-  #labeled_data = context.read.csv("labeled_data.csv")
   labeled_data = context.read.load("labeled_data.csv", format="csv", sep=",", inferSchema="true", header="true")
 
   #TASK 2
-  #labeled_data.join(commentpar.select("id"), "Input_id").show()
-  #context.sql("SELECT * FROM labeled_data l JOIN commentpar c ON l.Input_id = c.id").show()
-  #modeling_data = context.sql('SELECT * FROM comments_view JOIN labeled_data_view ON comments_view.id = labeled_data_view.Input_id')
   comments = commentpar.select('id', 'body')
   join = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
 
-  #TASK 4
-  #context.udf.register("sanitizeWithPython", sanitize)
+  #TASK 4,5
   sanitizeWithPython = udf(sanitize)
   splitGramsWithPython = udf(split_grams)
   grams_df = join.select("id", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
-  
-  #TASK 5
-  #context.udf.register("splitGramsWithPython", split_grams)
-
-  #split = grams_df.select("grams", splitGramsWithPython("grams").alias("features"))
-  grams_df.write.csv("lol")
-
- 
-
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
