@@ -19,6 +19,13 @@ def split_grams(grams):
     split = split + j
   return split
 
+def change_pos(trump):
+  #if poslabeld
+  if trump == 1:
+    return 1
+  else:
+    return 0
+  
 def main(context):
   """Main function takes a Spark SQL context."""
   # YOUR CODE HERE
@@ -46,14 +53,19 @@ def main(context):
   sanitizeWithPython = udf(sanitize, ArrayType(StringType()))
   splitGramsWithPython = udf(split_grams, ArrayType(StringType()))
   #grams_df = join.select("id", sanitizeWithPython("body").alias("grams"))
-  grams_df = join.select("id", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
+  grams_df = join.select("id", "labeldjt", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
   #print(grams_df.dtypes)
 
   #TASK 6A
   cv = CountVectorizer(inputCol="grams", outputCol="features", minDF=5)
   cv_df = cv.fit(grams_df)
   result = cv_df.transform(grams_df)
-  result.show(truncate=False)
+  #result.show(truncate=False)
+
+  #TASK 6B
+  changePosWithPython = udf(change_pos, IntegerType())
+  grams_df = grams_df.withColumn("posSent",changePosWithPython("labeldjt"))
+  grams_df.show(n=10)
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
