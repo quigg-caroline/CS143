@@ -54,13 +54,13 @@ def main(context):
 
   #TASK 2
   comments = commentpar.select('id', 'body')
-  join = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
+  comment_df = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
 
   #TASK 4,5
   sanitizeWithPython = udf(sanitize, ArrayType(StringType()))
   splitGramsWithPython = udf(split_grams, ArrayType(StringType()))
   #grams_df = join.select("id", sanitizeWithPython("body").alias("grams"))
-  grams_df = join.select("id", "labeldjt", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
+  grams_df = comment_df.select("id", "labeldjt", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
   #print(grams_df.dtypes)
 
   #TASK 6A
