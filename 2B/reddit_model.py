@@ -8,6 +8,8 @@ from pyspark.sql import SQLContext
 import os
 from pyspark.sql.functions import udf
 from cleantext import sanitize
+from pyspark.ml.feature import CountVectorizer
+from pyspark.sql.types import *
 
 def split_grams(grams):
   grams = grams[1:]
@@ -41,14 +43,24 @@ def main(context):
   join = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
 
   #TASK 4,5
-  sanitizeWithPython = udf(sanitize)
-  splitGramsWithPython = udf(split_grams)
+  sanitizeWithPython = udf(sanitize, ArrayType(StringType()))
+  splitGramsWithPython = udf(split_grams, ArrayType(StringType()))
+  #grams_df = join.select("id", sanitizeWithPython("body").alias("grams"))
   grams_df = join.select("id", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
+  print(grams_df.dtypes)
+
+  #TASK 6
+  cv = CountVectorizer(inputCol="grams", outputCol="features", minDF=5)
+  #cv_df = cv.fit(grams_df)
+
+  #result = model.transform(grams_df)
+  #result.show(truncate=False)
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
   conf = conf.setMaster("local[*]")
   sc   = SparkContext(conf=conf)
+  sc.setLogLevel("ERROR")
   sqlContext = SQLContext(sc)
   sc.addPyFile("cleantext.py")
 
