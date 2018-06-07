@@ -25,6 +25,13 @@ def change_pos(trump):
     return 1
   else:
     return 0
+
+def change_neg(trump):
+  #if poslabeld
+  if trump == -1:
+    return 1
+  else:
+    return 0
   
 def main(context):
   """Main function takes a Spark SQL context."""
@@ -65,6 +72,10 @@ def main(context):
   #TASK 6B
   changePosWithPython = udf(change_pos, IntegerType())
   grams_df = grams_df.withColumn("posSent",changePosWithPython("labeldjt"))
+  #grams_df.show(n=10)
+
+  changeNegWithPython = udf(change_neg, IntegerType())
+  grams_df = grams_df.withColumn("negSent",changeNegWithPython("labeldjt"))
   grams_df.show(n=10)
 
 if __name__ == "__main__":
