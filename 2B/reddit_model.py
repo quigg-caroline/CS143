@@ -47,14 +47,13 @@ def main(context):
   splitGramsWithPython = udf(split_grams, ArrayType(StringType()))
   #grams_df = join.select("id", sanitizeWithPython("body").alias("grams"))
   grams_df = join.select("id", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
-  print(grams_df.dtypes)
+  #print(grams_df.dtypes)
 
-  #TASK 6
+  #TASK 6A
   cv = CountVectorizer(inputCol="grams", outputCol="features", minDF=5)
-  #cv_df = cv.fit(grams_df)
-
-  #result = model.transform(grams_df)
-  #result.show(truncate=False)
+  cv_df = cv.fit(grams_df)
+  result = cv_df.transform(grams_df)
+  result.show(truncate=False)
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
