@@ -11,7 +11,7 @@ from cleantext import sanitize
 from pyspark.ml.feature import CountVectorizer
 from pyspark.sql.types import *
 from pyspark.ml.classification import LogisticRegression
-from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
+from pyspark.ml.tuning import CrossValidator, ParamGridBuilder, CrossValidatorModel
 from pyspark.ml.evaluation import BinaryClassificationEvaluator
 
 def split_grams(grams):
@@ -32,6 +32,18 @@ def change_pos(trump):
 def change_neg(trump):
   #if poslabeld
   if trump == -1:
+    return 1
+  else:
+    return 0
+
+def label_pos(probability):
+  if probability[1] > 0.2:
+    return 1
+  else:
+    return 0
+
+def label_neg(probability):
+  if probability[1] > 0.25:
     return 1
   else:
     return 0
@@ -117,11 +129,11 @@ def main(context):
   posModel = posCrossval.fit(posTrain)
   print("Training negative classifier...")
   negModel = negCrossval.fit(negTrain)
-
-  # Once we train the models, we don't want to do it again. We can save the models and load them again later.
-  posModel.save("www/pos.model")
-  negModel.save("www/neg.model")
   '''
+  # Once we train the models, we don't want to do it again. We can save the models and load them again later.
+  #posModel.save("www/pos.model")
+  #negModel.save("www/neg.model")
+  
 
   #TASK 8
   stripIdWithPython = udf(strip_id, StringType())
@@ -132,10 +144,28 @@ def main(context):
   #comment_data_df.show(n=10)
 
   #TASK 9
-  unlabeled_df = comment_data_df.select("id", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"), "link_id", "created_utc", "author_flair_text")
-  unlabeled_df.show(n=10)
-  #cv_df = cv.fit(unlabeled_df)
-  #result = cv_df.transform(grams_df)
+  unlabeled_df = comment_data_df.select("id", "body", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"), "title", "created_utc", "author_flair_text")
+  #unlabeled_df.show(n=10)
+  unlabeled_result = cv_df.transform(unlabeled_df)
+  #unlabeled_result.show(n=10)
+  unlabeled_result.createGlobalTempView("unlabeled_view")
+  unlabeled_result = context.sql("SELECT * FROM global_temp.unlabeled_view WHERE body NOT LIKE '%/s%' AND body NOT LIKE '&gt%' ")
+  posModel = CrossValidatorModel.load("pos.model")
+  negModel = CrossValidatorModel.load("neg.model")
+  posResult = posModel.transform(unlabeled_result)
+  posResult = posResult.withColumnRenamed('probability','pos_prob')
+  posResult = posResult.withColumnRenamed('rawPrediction','pos_raw')
+  posResult = posResult.withColumnRenamed('prediction','pos_pred')
+  result = negModel.transform(posResult)
+  #posResult.show(n=10)
+  #negResult.show(n=10)
+  labelPosWithPython = udf(label_pos, IntegerType())
+  labelNegWithPython = udf(label_neg, IntegerType())
+  sentiment = result.withColumn("pos", labelPosWithPython("pos_prob"))
+  sentiment = sentiment.withColumn("neg", labelNegWithPython("probability")).select("id","body","title","created_utc","author_flair_text","pos","neg")
+  sentiment.show(n=5)
+
+
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
