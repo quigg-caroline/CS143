@@ -131,6 +131,12 @@ def splitList(l, splitters):
             finalList[currListIndex].append(item)
     return finalList
 
+# def sanitize(text):
+#     try:
+#         return do_sanitize(text)
+#     except:
+#         return ['', '', '', '']
+
 def sanitize(text):
     """Do parse the text in variable "text" according to the spec, and return
     a LIST containing FOUR strings 
@@ -146,11 +152,15 @@ def sanitize(text):
     text = text.replace('\t', ' ')
 
     #Step 2: Remove URLs
-    matches = re.findall(r'\[.*\]\(https?:\/\/\S+\)', text)
-    for match in matches:
-        sub_text= re.findall(r'\[(.*?)\]',match)[0]
-        text= re.sub(r'match',sub_text,text)    
-    text = re.sub(r'https?:\/\/\S+', "", text)
+
+    # POTENTIALLY USE THIS INSTEAD OF BELOW
+    re.sub(r'^https?:\/\/.*[\r\n]*', '', text) 
+
+    # matches = re.findall(r'\[.*\]\(https?:\/\/\S+\)', text)
+    # for match in matches:
+    #     sub_text= re.findall(r'\[(.*?)\]',match)[0]
+    #     text= re.sub(r'match',sub_text,text)   
+    # text = re.sub(r'https?:\/\/\S+', "", text)
 
     #Steps 3 & 4: Split text on single space & separate external punctuations
     text = re.findall(r"[^.,!?;:\s]+|[.,!?;:]", text) #Hardcode external punctuations to be separated
