@@ -206,7 +206,7 @@ def main(context):
   # 10A Aggregate comments within a submission, calculating percentage
   # Using MAX(submission_score) but they should all be the same since it's
   # grouped by link_id
-  submissionCSVName = 'submission_score.csv'
+  submissionCSVName = 'submissions.csv'
   if (not os.path.isdir(submissionCSVName)):
     submission_aggregate = context.sql(f'''
       SELECT link_id, MAX(submission_score), {aggregator}

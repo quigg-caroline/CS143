@@ -34,19 +34,19 @@ PLOT 1: SENTIMENT OVER TIME (TIME SERIES PLOT)
 # Assumes a file called time_data.csv that has columns
 # date, Positive, Negative. Use absolute path.
 
-# ts = pd.read_csv("time_data.csv")
-# # Remove erroneous row.
-# ts = ts[ts['date'] != '2018-12-31']
+ts = pd.read_csv("time_data.csv")
+# Remove erroneous row.
+ts = ts[ts['date'] != '2018-12-31']
 
-# plt.figure(figsize=(12,5))
-# ts.date = pd.to_datetime(ts['date'], format='%Y-%m-%d')
-# ts.set_index(['date'],inplace=True)
+plt.figure(figsize=(12,5))
+ts.date = pd.to_datetime(ts['date'], format='%Y-%m-%d')
+ts.set_index(['date'],inplace=True)
 
-# ax = ts.plot(title="President Trump Sentiment on /r/politics Over Time",
-#         color=['green', 'red'],
-#        ylim=(0, 1.05))
-# ax.plot()
-# plt.savefig("part1.png")
+ax = ts.plot(title="President Trump Sentiment on /r/politics Over Time",
+        color=['green', 'red'],
+       ylim=(0, 1.05))
+ax.plot()
+plt.savefig("part1.png")
 
 
 """
@@ -61,7 +61,7 @@ PLOT 2: SENTIMENT BY STATE (POSITIVE AND NEGATIVE SEPARATELY)
 
 
 
-# state_data = pd.read_csv("state_data.csv")
+state_data = pd.read_csv("state_data.csv")
 
 """
 You also need to download the following files. Put them somewhere convenient:
@@ -78,71 +78,71 @@ The rename the files to get rid of the ?raw=true
 
 """
 
-# # Lambert Conformal map of lower 48 states.
-# m = Basemap(llcrnrlon=-119, llcrnrlat=22, urcrnrlon=-64, urcrnrlat=49,
-#         projection='lcc', lat_1=33, lat_2=45, lon_0=-95)
-# shp_info = m.readshapefile('/Users/Monil/Desktop/Project 2 Plots/st99_d00','states',drawbounds=True)  # No extension specified in path here.
-# pos_data = dict(zip(state_data.state, state_data.Positive))
-# neg_data = dict(zip(state_data.state, state_data.Negative))
-# diff_data = dict(zip(state_data.state, state_data.Positive - state_data.Negative)) 
-# # choose a color for each state based on sentiment.
-# pos_colors = {}
-# neg_colors = {}
-# diff_colors = {}
-# statenames = ['Alaska','Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
+# Lambert Conformal map of lower 48 states.
+m = Basemap(llcrnrlon=-119, llcrnrlat=22, urcrnrlon=-64, urcrnrlat=49,
+        projection='lcc', lat_1=33, lat_2=45, lon_0=-95)
+shp_info = m.readshapefile('/home/cs143/www/project2/2B/st99_d00','states',drawbounds=True)  # No extension specified in path here.
+pos_data = dict(zip(state_data.state, state_data.percent_positive))
+neg_data = dict(zip(state_data.state, state_data.percent_negative))
+diff_data = dict(zip(state_data.state, state_data.percent_positive - state_data.percent_negative)) 
+# choose a color for each state based on sentiment.
+pos_colors = {}
+neg_colors = {}
+diff_colors = {}
+statenames = ['Alaska','Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
 
-# # statenames = []
-# pos_cmap = plt.cm.Greens # use 'hot' colormap
-# neg_cmap = plt.cm.Reds 
-# diff_cmap = plt.cm.Blues
-# vmin = 0; vmax = 1 # set range.
-# for shapedict in m.states_info:
-#     statename = shapedict['NAME']
-#     # skip DC and Puerto Rico.
-#     if statename not in ['District of Columbia', 'Puerto Rico']:
-#         pos = pos_data[statename]
-#         neg = neg_data[statename]
-#         diff = diff_data[statename]
-#         pos_colors[statename] = pos_cmap(1. - np.sqrt (abs(( pos - vmin )/( vmax - vmin))) )[:3]
-#         neg_colors[statename] = neg_cmap(1. - np.sqrt (abs(( neg - vmin )/( vmax - vmin))) )[:3]
-#         diff_colors[statename] = diff_cmap(1. - np.sqrt (abs(( diff - vmin )/( vmax - vmin))) )[:3]
+# statenames = []
+pos_cmap = plt.cm.Greens # use 'hot' colormap
+neg_cmap = plt.cm.Reds 
+diff_cmap = plt.cm.Blues
+vmin = 0; vmax = 1 # set range.
+for shapedict in m.states_info:
+    statename = shapedict['NAME']
+    # skip DC and Puerto Rico.
+    if statename not in ['District of Columbia', 'Puerto Rico']:
+        pos = pos_data[statename]
+        neg = neg_data[statename]
+        diff = diff_data[statename]
+        pos_colors[statename] = pos_cmap(1. - np.sqrt (abs(( pos - vmin )/( vmax - vmin))) )[:3]
+        neg_colors[statename] = neg_cmap(1. - np.sqrt (abs(( neg - vmin )/( vmax - vmin))) )[:3]
+        diff_colors[statename] = diff_cmap(1. - np.sqrt (abs(( diff - vmin )/( vmax - vmin))) )[:3]
 
-#     statenames.append(statename)
-# # cycle through state names, color each one.
+    statenames.append(statename)
+# cycle through state names, color each one.
 
-# # POSITIVE MAP
-# ax = plt.gca() # get current axes instance
-# for nshape, seg in enumerate(m.states):
-#     # skip Puerto Rico and DC
-#     if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
-#         color = rgb2hex(pos_colors[statenames[nshape]]) 
-#         poly = Polygon(seg, facecolor=color, edgecolor=color)
-#         ax.add_patch(poly)
-# plt.title('Positive Trump Sentiment Across the US')
-# plt.savefig("postive_map.png")
+# POSITIVE MAP
+ax = plt.gca() # get current axes instance
+for nshape, seg in enumerate(m.states):
+    # skip Puerto Rico and DC
+    if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
+        color = rgb2hex(pos_colors[statenames[nshape]]) 
+        poly = Polygon(seg, facecolor=color, edgecolor=color)
+        ax.add_patch(poly)
+plt.title('Positive Trump Sentiment Across the US')
+plt.savefig("postive_map.png")
 
-# # NEGATIVE MAP 
+# NEGATIVE MAP 
 
-# ax = plt.gca() # get current axes instance
-# for nshape, seg in enumerate(m.states):
-#     # skip Puerto Rico and DC
-#     if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
-#         color = rgb2hex(neg_colors[statenames[nshape]]) 
-#         poly = Polygon(seg, facecolor=color, edgecolor=color)
-#         ax.add_patch(poly)
-# plt.title('Negative Trump Sentiment Across the US')
-# plt.savefig("negative_map.png")
+ax = plt.gca() # get current axes instance
+for nshape, seg in enumerate(m.states):
+    # skip Puerto Rico and DC
+    if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
+        color = rgb2hex(neg_colors[statenames[nshape]]) 
+        poly = Polygon(seg, facecolor=color, edgecolor=color)
+        ax.add_patch(poly)
+plt.title('Negative Trump Sentiment Across the US')
+plt.savefig("negative_map.png")
 
-# # DIFF MAP 
-# ax = plt.gca() # get current axes instance
-# for nshape, seg in enumerate(m.states):
-#     # skip Puerto Rico and DC
-#     if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
-#         color = rgb2hex(diff_colors[statenames[nshape]]) 
-#         poly = Polygon(seg, facecolor=color, edgecolor=color)
-#         ax.add_patch(poly)
-# plt.title('Diff Trump Sentiment Across the US')
-# plt.savefig("diff_map.png")
+# DIFF MAP 
+ax = plt.gca() # get current axes instance
+for nshape, seg in enumerate(m.states):
+    # skip Puerto Rico and DC
+    if statenames[nshape] not in ['District of Columbia', 'Puerto Rico']:
+        color = rgb2hex(diff_colors[statenames[nshape]]) 
+        poly = Polygon(seg, facecolor=color, edgecolor=color)
+        ax.add_patch(poly)
+plt.title('Diff Trump Sentiment Across the US')
+plt.savefig("diff_map.png")
 
 # SOURCE: https://stackoverflow.com/questions/39742305/how-to-use-basemap-python-to-plot-us-with-50-states
 # (this misses Alaska and Hawaii. If you can get them to work, EXTRA CREDIT)
@@ -150,6 +150,8 @@ The rename the files to get rid of the ?raw=true
 """
 PART 4 SHOULD BE DONE IN SPARK
 """
+
+
 
 """
 PLOT 5A: SENTIMENT BY STORY SCORE
@@ -161,13 +163,13 @@ PLOT 5A: SENTIMENT BY STORY SCORE
 # Assumes a CSV file called submission_score.csv with the following coluns
 # submission_score, Positive, Negative
 
-story = pd.read_csv("submission_score.csv")
+story = pd.read_csv("submissions.csv")
 plt.figure(figsize=(12,5))
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
-ax1.scatter(story['submission_score'], story['Positive'], s=10, c='b', marker="s", label='Positive')
-ax1.scatter(story['submission_score'], story['Negative'], s=10, c='r', marker="o", label='Negative')
+ax1.scatter(story['submission_score'], story['percent_positive'], s=10, c='b', marker="s", label='percent_positive')
+ax1.scatter(story['submission_score'], story['percent_negative'], s=10, c='r', marker="o", label='Negative')
 plt.legend(loc='lower right');
 
 plt.xlabel('President Trump Sentiment by Submission Score')
@@ -189,8 +191,8 @@ plt.figure(figsize=(12,5))
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 
-ax1.scatter(story['comment_score'], story['Positive'], s=10, c='b', marker="s", label='Positive')
-ax1.scatter(story['comment_score'], story['Negative'], s=10, c='r', marker="o", label='Negative')
+ax1.scatter(story['comment_score'], story['percent_positive'], s=10, c='b', marker="s", label='Positive')
+ax1.scatter(story['comment_score'], story['percent_negative'], s=10, c='r', marker="o", label='Negative')
 plt.legend(loc='lower right');
 
 plt.xlabel('President Trump Sentiment by Comment Score')
