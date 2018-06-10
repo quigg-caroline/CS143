@@ -209,7 +209,7 @@ def main(context):
   submissionCSVName = 'submissions.csv.data'
   if (not os.path.isdir(submissionCSVName)):
     submission_aggregate = context.sql(f'''
-      SELECT link_id, MAX(submission_score), {aggregator}
+      SELECT link_id, MAX(submission_score) AS submission_score, {aggregator}
       FROM sentiments_table
       GROUP BY link_id
     ''')

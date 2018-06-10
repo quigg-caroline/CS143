@@ -63,29 +63,17 @@ PLOT 2: SENTIMENT BY STATE (POSITIVE AND NEGATIVE SEPARATELY)
 
 state_data = pd.read_csv("state_data.csv")
 
-"""
-You also need to download the following files. Put them somewhere convenient:
-https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.shp
-https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.dbf
-https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.shx
-
-IF YOU USE WGET (CONVERT TO CURL IF YOU USE THAT) TO DOWNLOAD THE ABOVE FILES, YOU NEED TO USE 
-wget "https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.shp?raw=true"
-wget "https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.dbf?raw=true"
-wget "https://github.com/matplotlib/basemap/blob/master/examples/st99_d00.shx?raw=true"
-
-The rename the files to get rid of the ?raw=true
-
-"""
 
 # Lambert Conformal map of lower 48 states.
 m = Basemap(llcrnrlon=-119, llcrnrlat=22, urcrnrlon=-64, urcrnrlat=49,
         projection='lcc', lat_1=33, lat_2=45, lon_0=-95)
-shp_info = m.readshapefile('/home/cs143/www/project2/2B/plots/st99_d00','states',drawbounds=True)  # No extension specified in path here.
+shp_info = m.readshapefile('/Users/Monil/vm-shared/CS143/2B/plots/st99_d00','states',drawbounds=True)  # No extension specified in path here.
 pos_data = dict(zip(state_data.state, state_data.percent_positive))
 neg_data = dict(zip(state_data.state, state_data.percent_negative))
-diff_data = dict(zip(state_data.state, state_data.percent_positive - state_data.percent_negative)) 
+
+diff_data = dict(zip(state_data.state, 1 + state_data.percent_positive - state_data.percent_negative)) 
 # choose a color for each state based on sentiment.
+
 pos_colors = {}
 neg_colors = {}
 diff_colors = {}
@@ -108,8 +96,10 @@ for shapedict in m.states_info:
         diff_colors[statename] = diff_cmap(1. - np.sqrt (abs(( diff - vmin )/( vmax - vmin))) )[:3]
 
     statenames.append(statename)
+
 # cycle through state names, color each one.
 
+exit(1)
 # POSITIVE MAP
 ax = plt.gca() # get current axes instance
 for nshape, seg in enumerate(m.states):
@@ -186,7 +176,7 @@ plt.savefig("plot5a.png")
 # Assumes a CSV file called comment_score.csv with the following columns
 # comment_score, Positive, Negative
 
-story = pd.read_csv("comment_score.csv")
+story = pd.read_csv("comment_scores.csv")
 plt.figure(figsize=(12,5))
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
