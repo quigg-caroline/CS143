@@ -206,7 +206,7 @@ def main(context):
   # 10A Aggregate comments within a submission, calculating percentage
   # Using MAX(submission_score) but they should all be the same since it's
   # grouped by link_id
-  submissionCSVName = 'submissions.csv'
+  submissionCSVName = 'submissions.csv.data'
   if (not os.path.isdir(submissionCSVName)):
     submission_aggregate = context.sql(f'''
       SELECT link_id, MAX(submission_score), {aggregator}
@@ -217,7 +217,7 @@ def main(context):
   printTaskFinishMessage('10A')
 
   # 10B Aggregate comments within each day
-  timeDataCSVName = 'time_data.csv'
+  timeDataCSVName = 'time_data.csv.data'
   if (not os.path.isdir(timeDataCSVName)):
     cross_day_aggregate = context.sql(f'''
       SELECT t.date, SUM(t.pos) / COUNT(*) AS percent_positive, SUM(t.neg) / COUNT(*) AS percent_negative
@@ -231,7 +231,7 @@ def main(context):
   printTaskFinishMessage('10B')
 
   # 10C Aggregate comments across states
-  stateDataCSVName = 'state_data.csv'
+  stateDataCSVName = 'state_data.csv.data'
   if (not os.path.isdir(stateDataCSVName)):
     cross_state_aggregate = context.sql(f'''
       SELECT author_flair_text AS state, {aggregator} 
@@ -243,7 +243,7 @@ def main(context):
   printTaskFinishMessage('10C')
 
   # 10D By comment score
-  commentScoresCSVName = 'top_10_comment_scores.csv'
+  commentScoresCSVName = 'comment_scores.csv.data'
   if (not os.path.isdir(commentScoresCSVName)):
     top_10_comment_scores = context.sql(f'''
       SELECT comment_score, {aggregator}
@@ -251,20 +251,32 @@ def main(context):
       GROUP BY comment_score
       ORDER BY comment_score DESC
     ''')
+    # 10D.1 Show top 10 comments by score
     writeToFile(top_10_comment_scores, commentScoresCSVName)
   printTaskFinishMessage('10D')
 
   # 10E By submission score
-  submissionScoresCSVName = 'top_10_submission_scores.csv'
+  submissionScoresCSVName = 'submission_scores.csv.data'
+  submission_scores = None
   if (not os.path.isdir(submissionScoresCSVName)):
-    top_10_submission_scores = context.sql(f'''
-      SELECT submission_score, {aggregator}
+    submission_scores = context.sql(f'''
+      SELECT MIN(title) AS title, submission_score, {aggregator}
       FROM sentiments_table
       GROUP BY submission_score
       ORDER BY submission_score DESC
     ''')
-    writeToFile(top_10_submission_scores, submissionScoresCSVName)
+    writeToFile(submission_scores, submissionScoresCSVName)
+  
+    # Save the top 10 submissions list too if it hasn't been done yet
+    top10SubsCSVName = 'top_10_submissions.csv.data'
+    top10 = submission_scores.orderBy("submission_score", ascending=False).limit(10)
+    writeToFile(top10, top10SubsCSVName)
+
   printTaskFinishMessage('10')
+
+
+  # 10F Get top 10 lists
+
 
   return
 

@@ -81,7 +81,7 @@ The rename the files to get rid of the ?raw=true
 # Lambert Conformal map of lower 48 states.
 m = Basemap(llcrnrlon=-119, llcrnrlat=22, urcrnrlon=-64, urcrnrlat=49,
         projection='lcc', lat_1=33, lat_2=45, lon_0=-95)
-shp_info = m.readshapefile('/home/cs143/www/project2/2B/st99_d00','states',drawbounds=True)  # No extension specified in path here.
+shp_info = m.readshapefile('/home/cs143/www/project2/2B/plots/st99_d00','states',drawbounds=True)  # No extension specified in path here.
 pos_data = dict(zip(state_data.state, state_data.percent_positive))
 neg_data = dict(zip(state_data.state, state_data.percent_negative))
 diff_data = dict(zip(state_data.state, state_data.percent_positive - state_data.percent_negative)) 
