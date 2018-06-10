@@ -201,68 +201,71 @@ def main(context):
 
   # Set up temporary sentiments SQL table for querying
   context.registerDataFrameAsTable(sentiments, 'sentiments_table')
-  aggregator = 'SUM(pos) / COUNT(*) as percent_positive, SUM(neg) / COUNT(*) as percent_negative'
+  aggregator = 'SUM(pos) / COUNT(*) AS percent_positive, SUM(neg) / COUNT(*) AS percent_negative'
 
   # 10A Aggregate comments within a submission, calculating percentage
-  submission_aggregate = context.sql(f'''
-    SELECT link_id, {aggregator}
-    FROM sentiments_table
-    GROUP BY link_id
-  ''')
+  # Using MAX(submission_score) but they should all be the same since it's
+  # grouped by link_id
+  submissionCSVName = 'submission_score.csv'
+  if (not os.path.isdir(submissionCSVName)):
+    submission_aggregate = context.sql(f'''
+      SELECT link_id, MAX(submission_score), {aggregator}
+      FROM sentiments_table
+      GROUP BY link_id
+    ''')
+    writeToFile(submission_aggregate, submissionCSVName)
   printTaskFinishMessage('10A')
 
   # 10B Aggregate comments within each day
-  cross_day_aggregate = context.sql(f'''
-    SELECT link_id, date, {aggregator}
-    FROM (
-      SELECT title, DATE(FROM_UNIXTIME(created_utc)) as date, pos, neg
-      FROM sentiments_table
-    )
-    GROUP BY date
-  ''')
+  timeDataCSVName = 'time_data.csv'
+  if (not os.path.isdir(timeDataCSVName)):
+    cross_day_aggregate = context.sql(f'''
+      SELECT t.date, SUM(t.pos) / COUNT(*) AS percent_positive, SUM(t.neg) / COUNT(*) AS percent_negative
+      FROM (
+        SELECT DATE(FROM_UNIXTIME(created_utc)) AS date, pos, neg
+        FROM sentiments_table
+      ) t
+      GROUP BY date
+    ''')
+    writeToFile(cross_day_aggregate, timeDataCSVName)
   printTaskFinishMessage('10B')
 
   # 10C Aggregate comments across states
-  cross_state_aggregate = context.sql(f'''
-    SELECT link_id, author_flair_text as state, {aggregator}
-    FROM sentiments_table
-    WHERE author_flair_text IN ({", ".join(US_STATES)})
-    GROUP BY author_flair_text
-  ''')
+  stateDataCSVName = 'state_data.csv'
+  if (not os.path.isdir(stateDataCSVName)):
+    cross_state_aggregate = context.sql(f'''
+      SELECT author_flair_text AS state, {aggregator} 
+      FROM sentiments_table
+      WHERE author_flair_text IN ({", ".join(map(lambda s: f"'{s}'", US_STATES))})
+      GROUP BY author_flair_text
+    ''')
+    writeToFile(cross_state_aggregate, stateDataCSVName)
   printTaskFinishMessage('10C')
 
   # 10D By comment score
-  top_10_comment_scores = context.sql(f'''
-    SELECT link_id, comment_score, {aggregator}
-    FROM sentiments_table
-    GROUP BY comment_score
-    ORDER BY comment_score DESC
-    LIMIT 10
-  ''')
+  commentScoresCSVName = 'top_10_comment_scores.csv'
+  if (not os.path.isdir(commentScoresCSVName)):
+    top_10_comment_scores = context.sql(f'''
+      SELECT comment_score, {aggregator}
+      FROM sentiments_table
+      GROUP BY comment_score
+      ORDER BY comment_score DESC
+    ''')
+    writeToFile(top_10_comment_scores, commentScoresCSVName)
   printTaskFinishMessage('10D')
 
   # 10E By submission score
-  top_10_submission_scores = context.sql(f'''
-    SELECT link_id, submission_score, {aggregator}
-    FROM sentiments_table
-    GROUP BY submission_score
-    ORDER BY submission_score DESC
-    LIMIT 10
-  ''')
-  printTaskFinishMessage('10E')
-
-  # 10F Write it all to CSV's
-  writeToFile(submission_aggregate, 'submission_score.csv')
-  printTaskFinishMessage('csv1-write')
-  writeToFile(cross_day_aggregate, 'time_data.csv')
-  printTaskFinishMessage('csv2-write')
-  writeToFile(cross_state_aggregate, 'state_data.csv')
-  printTaskFinishMessage('csv3-write')
-  writeToFile(top_10_comment_scores, 'top_10_comment_scores.csv')
-  printTaskFinishMessage('csv4-write')
-  writeToFile(top_10_submission_scores, 'top_10_submission_scores.csv')
-  printTaskFinishMessage('csv5-write')
+  submissionScoresCSVName = 'top_10_submission_scores.csv'
+  if (not os.path.isdir(submissionScoresCSVName)):
+    top_10_submission_scores = context.sql(f'''
+      SELECT submission_score, {aggregator}
+      FROM sentiments_table
+      GROUP BY submission_score
+      ORDER BY submission_score DESC
+    ''')
+    writeToFile(top_10_submission_scores, submissionScoresCSVName)
   printTaskFinishMessage('10')
+
   return
 
 if __name__ == "__main__":
