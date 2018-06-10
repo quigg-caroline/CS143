@@ -34,7 +34,8 @@ def getClassifierModels(posResult, negResult):
   return posModel, negModel
 
 def buildModels(posResult, negResult):
-  #TASK 7
+  # TASK 7
+  # Code for Task 7...
   # Initialize two logistic regression models.
   # Replace labelCol with the column containing the label, and featuresCol with the column containing the features.
   poslr = LogisticRegression(labelCol="label", featuresCol="features", maxIter=10)
@@ -118,7 +119,9 @@ def printTaskFinishMessage(i):
 
 
 def buildSentimentsDF(context):
-  ##### TASK 1: Load data into PySpark
+  # TASK 1
+  # Code for task 1...
+  #Load data into PySpark
   #Written as a parquet file so should only take 10+ minutes to run the first time
   if os.path.isdir('comments.parquet') == False:
     comments = context.read.json("comments-minimal.json.bz2")
@@ -133,25 +136,29 @@ def buildSentimentsDF(context):
   labeled_data = context.read.load("labeled_data.csv", format="csv", sep=",", inferSchema="true", header="true")
   printTaskFinishMessage('1')
 
-  ##### TASK 2
+  # TASK 2
+  # Code for task 2...
   comments = commentpar.select('id', 'body')
   comment_df = labeled_data.join(comments, labeled_data['Input_id'] == comments['id'], 'inner')
   printTaskFinishMessage('2')
 
-  ##### TASK 4,5
+  # TASK 4,5
+  # Code for tasks 4 and 5
   sanitizeWithPython = udf(sanitize, ArrayType(StringType()))
   splitGramsWithPython = udf(split_grams, ArrayType(StringType()))
   #grams_df = join.select("id", sanitizeWithPython("body").alias("grams"))
   grams_df = comment_df.select("id", "labeldjt", splitGramsWithPython(sanitizeWithPython("body")).alias("grams"))
   printTaskFinishMessage('4/5')
 
-  ##### TASK 6A - 
+  # TASK 6A
+  # Code for task 6A... 
   cv = CountVectorizer(inputCol="grams", outputCol="features", minDF=5)
   cv_df = cv.fit(grams_df)
   result = cv_df.transform(grams_df)
   printTaskFinishMessage('6A')
 
-  ##### TASK 6B
+  # TASK 6B
+  # Code for task 6B...
   changePosWithPython = udf(change_pos, IntegerType())
   posResult = result.withColumn("label",changePosWithPython("labeldjt"))
   #grams_df.show(n=10)
@@ -162,7 +169,9 @@ def buildSentimentsDF(context):
   ##### TASK 7 - Train model #####
   ################################
 
-  # 7A Get classifier models, building them if they don't exist as saved files already
+  # TASK 7
+  # Code for Task 7...
+  # Get classifier models, building them if they don't exist as saved files already
   posModel, negModel = getClassifierModels(posResult, negResult)
   printTaskFinishMessage('7')
 
@@ -170,6 +179,8 @@ def buildSentimentsDF(context):
   ##### TASK 8 - Read in the full comments data now #####
   #######################################################
 
+  # TASK 8
+  # Code for task 8...
   stripIdWithPython = udf(strip_id, StringType())
 
   # 8A Grab the title and score of the original post
@@ -204,6 +215,8 @@ def buildSentimentsDF(context):
   # comments
   # printTaskFinishMessage('9A')
   
+  # TASK 9
+  # Code for task 9...
   # 9B Transform using the unlabeled data (??? what does this MEAN???), filter out sarcasm and quoted submissions
   unlabeled_result = cv_df\
     .transform(commentsAndPosts)\
@@ -255,6 +268,8 @@ def main(context):
   ##### TASK 10 - Compute various percentages #####
   #################################################
 
+  # TASK 10
+  # Code for task 10...
   # Set up temporary sentiments SQL table for querying
   context.registerDataFrameAsTable(sentiments, 'sentiments_table')
   aggregator = 'SUM(pos) / COUNT(*) AS percent_positive, SUM(neg) / COUNT(*) AS percent_negative'
