@@ -266,11 +266,27 @@ def main(context):
       ORDER BY submission_score DESC
     ''')
     writeToFile(submission_scores, submissionScoresCSVName)
+
+    #create top 10 positive submission list
+    top_pos = context.sql('''SELECT title, SUM(pos) / COUNT(*) AS percent_positive 
+      FROM sentiments_table
+      GROUP BY link_id
+      ORDER BY percent_positive DESC
+      LIMIT 10
+    ''')
   
+    top_neg = context.sql('''SELECT title, SUM(neg) / COUNT(*) AS negative_positive 
+      FROM sentiments_table
+      GROUP BY link_id
+      ORDER BY negative_positive DESC
+      LIMIT 10
+    ''')
+
     # Save the top 10 submissions list too if it hasn't been done yet
-    top10SubsCSVName = 'top_10_submissions.csv.data'
-    top10 = submission_scores.orderBy("submission_score", ascending=False).limit(10)
-    writeToFile(top10, top10SubsCSVName)
+    top10PosSubsCSVName = 'top_10_pos_submissions.csv.data'
+    top10NegSubsCSVName = 'top_10_neg_submissions.csv.data'
+    writeToFile(top_pos, top10PosSubsCSVName)
+    writeToFile(top_neg, top10NegSubsCSVName)
 
   printTaskFinishMessage('10')
 
