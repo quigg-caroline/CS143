@@ -262,95 +262,74 @@ def main(context):
   # 10A Aggregate comments within a submission, calculating percentage
   # Using MAX(submission_score) but they should all be the same since it's
   # grouped by link_id
-  submissionCSVName = 'submissions.csv.data'
-  if (not os.path.isdir(submissionCSVName)):
-    submission_aggregate = context.sql(f'''
-      SELECT link_id, MAX(submission_score) AS submission_score, {aggregator}
-      FROM sentiments_table
-      GROUP BY link_id
-    ''')
-    writeToFile(submission_aggregate, submissionCSVName)
+  runQueryAndSaveCSV(f'''
+    SELECT link_id, MAX(submission_score) AS submission_score, {aggregator}
+    FROM sentiments_table
+    GROUP BY link_id
+  ''', 'submissions.csv.data', context)
   printTaskFinishMessage('10A')
 
   # 10B Aggregate comments within each day
-  timeDataCSVName = 'time_data.csv.data'
-  if (not os.path.isdir(timeDataCSVName)):
-    cross_day_aggregate = context.sql(f'''
-      SELECT t.date, SUM(t.pos) / COUNT(*) AS percent_positive, SUM(t.neg) / COUNT(*) AS percent_negative
-      FROM (
-        SELECT DATE(FROM_UNIXTIME(created_utc)) AS date, pos, neg
-        FROM sentiments_table
-      ) t
-      GROUP BY date
-    ''')
-    writeToFile(cross_day_aggregate, timeDataCSVName)
+  runQueryAndSaveCSV(f'''
+    SELECT t.date, SUM(t.pos) / COUNT(*) AS percent_positive, SUM(t.neg) / COUNT(*) AS percent_negative
+    FROM (
+      SELECT DATE(FROM_UNIXTIME(created_utc)) AS date, pos, neg
+      FROM sentiments_table
+    ) t
+    GROUP BY date
+  ''', 'time_data.csv.data', context)
   printTaskFinishMessage('10B')
 
   # 10C Aggregate comments across states
-  stateDataCSVName = 'state_data.csv.data'
-  if (not os.path.isdir(stateDataCSVName)):
-    cross_state_aggregate = context.sql(f'''
-      SELECT author_flair_text AS state, {aggregator} 
-      FROM sentiments_table
-      WHERE author_flair_text IN ({", ".join(map(lambda s: f"'{s}'", US_STATES))})
-      GROUP BY author_flair_text
-    ''')
-    writeToFile(cross_state_aggregate, stateDataCSVName)
+  runQueryAndSaveCSV(f'''
+    SELECT author_flair_text AS state, {aggregator} 
+    FROM sentiments_table
+    WHERE author_flair_text IN ({", ".join(map(lambda s: f"'{s}'", US_STATES))})
+    GROUP BY author_flair_text
+  ''', 'state_data.csv.data', context)
   printTaskFinishMessage('10C')
 
   # 10D By comment score
-  commentScoresCSVName = 'comment_scores.csv.data'
-  if (not os.path.isdir(commentScoresCSVName)):
-    top_10_comment_scores = context.sql(f'''
-      SELECT comment_score, {aggregator}
-      FROM sentiments_table
-      GROUP BY comment_score
-      ORDER BY comment_score DESC
-    ''')
-    # 10D.1 Show top 10 comments by score
-    writeToFile(top_10_comment_scores, commentScoresCSVName)
+  runQueryAndSaveCSV(f'''
+    SELECT comment_score, {aggregator}
+    FROM sentiments_table
+    GROUP BY comment_score
+    ORDER BY comment_score DESC
+  ''', 'comment_scores.csv.data', context)
   printTaskFinishMessage('10D')
 
   # 10E By submission score
-  submissionScoresCSVName = 'submission_scores.csv.data'
-  submission_scores = None
-  if (not os.path.isdir(submissionScoresCSVName)):
-    submission_scores = context.sql(f'''
-      SELECT MIN(title) AS title, submission_score, {aggregator}
-      FROM sentiments_table
-      GROUP BY submission_score
-      ORDER BY submission_score DESC
-    ''')
-    writeToFile(submission_scores, submissionScoresCSVName)
+  runQueryAndSaveCSV(f'''
+    SELECT MIN(title) AS title, submission_score, {aggregator}
+    FROM sentiments_table
+    GROUP BY submission_score
+    ORDER BY submission_score DESC
+  ''','submission_scores.csv.data', context)
 
-    #create top 10 positive submission list
-    top_pos = context.sql('''SELECT title, SUM(pos) / COUNT(*) AS percent_positive 
-      FROM sentiments_table
-      GROUP BY link_id
-      ORDER BY percent_positive DESC
-      LIMIT 10
-    ''')
+  #create top 10 positive submission list
+  runQueryAndSaveCSV('''
+    SELECT MAX(title) as title, SUM(pos) / COUNT(*) AS percent_positive 
+    FROM sentiments_table
+    GROUP BY link_id
+    ORDER BY percent_positive DESC
+    LIMIT 10
+  ''', 'top_10_pos_submissions.csv.data', context)
   
-    top_neg = context.sql('''SELECT title, SUM(neg) / COUNT(*) AS negative_positive 
+  # Save top 10 negative submissions
+  runQueryAndSaveCSV('''
+      SELECT MAX(title) as title, SUM(neg) / COUNT(*) AS percent_negative 
       FROM sentiments_table
       GROUP BY link_id
-      ORDER BY negative_positive DESC
+      ORDER BY percent_negative DESC
       LIMIT 10
-    ''')
-
-    # Save the top 10 submissions list too if it hasn't been done yet
-    top10PosSubsCSVName = 'top_10_pos_submissions.csv.data'
-    top10NegSubsCSVName = 'top_10_neg_submissions.csv.data'
-    writeToFile(top_pos, top10PosSubsCSVName)
-    writeToFile(top_neg, top10NegSubsCSVName)
+    ''', 'top_10_neg_submissions.csv.data', context)
 
   printTaskFinishMessage('10')
+  printTaskFinishMessage('ALL')
 
-
-  # 10F Get top 10 lists
-
-
-  return
+def runQueryAndSaveCSV(query, filename, context):
+  if (not os.path.isdir(filename)):
+    writeToFile(context.sql(query), filename)
 
 if __name__ == "__main__":
   conf = SparkConf().setAppName("CS143 Project 2B")
