@@ -1,4 +1,4 @@
 When the project is run all the way through, making parquet files for the first time and running the model in Task 7 the first time, our total runtime was about 4.5 hours. We sampled 20% of the data. We ran our code using the VM and the command spark-submit.
 On the spec for Task 6A, it was noted that only tokens that appear more than 5 times across the entire dataset should be used. We thought this meant that we should set minDF = 6, but our countVectorizer produced similar outputs to what people mentioned on Piazza when our minDF is 5, so we left minDF = 5.
-Other files that are included in the submission are states.py, which holds the list of states provided in the spec, and ml.py, which contains Task 7. 
+Other files that are included in the submission are states.py, which holds the list of states provided in the spec. 
 We did not do any extra credit that was offered for this project.
