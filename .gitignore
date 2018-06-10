@@ -4,3 +4,6 @@
 2B/submissions.parquet
 2B/comments.parquet
 2B/labeled_data.csv
+2B/**/*.parquet
+2B/**/*.model
+2B/**/*.csv.data
